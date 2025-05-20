@@ -1,116 +1,62 @@
-# Cohort Diff Tool PoC 🧬🚀
+# Cohort Builder for Snowflake
 
-Streamlit application for automated comparison of cohort‑derived datasets in Snowflake.
-#### Inspired and Built from cohort-builder example - https://github.com/Snowflake-Labs/sfguide-cohort-builder
+The Cohort Builder solution provides a method for creating and managing cohorts through a Streamlit application, utilizing Snowflake and Snowpark.
 
-* **Author**: Mohamed Shez (SWE)
-* **Created**: 20‑May‑2025
-* **Last updated**: 20‑May‑2025
-* **Version**: 0.1.0
-* **Status**: PoC (Proof of Concept)
-* **License**: Apache 2.0
-* **Contact**:
-* * GitHub - (https://github.com/shez1461)
+All sample code is provided for reference purposes only. Please note that this code is provided “AS IS” and without warranty. Snowflake will not offer any support for use of the sample code.
 
----
+Copyright (c) 2024 Snowflake Inc. All Rights Reserved.
 
-## 📌 At‑a‑Glance
+Please see TAGGING.md for details on object comments.
 
-The Cohort Comparison Tool replaces error‑prone manual checks with a **scalable, structured workflow** that detects differences between two cohort‑derived datasets—whether they have **identical or variant schemas**. Analysts can validate cohort changes, test logic modifications and build client‑ready diff summaries in seconds.
+## Overview
 
----
+The Cohort Builder Model leverages Snowflake and Snowpark to create, manage, and schedule cohorts effectively.
 
-## 📝 Acceptance Criteria
+A cohort is a group of subjects that share a common characteristic or experience within a defined period. This tool allows users to build cohorts based on specific criteria, manage existing cohorts, and schedule cohort updates.
 
-| #   | Category               | Requirement                                                                                                                                                                                         |
-| --- |------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1️⃣ | Identical Schemas      | • Accept two tables with matching column structures  <br>• Report **NEW**, **DROPPED** and **CHANGED** rows  <br>• Emit JSON `change_summary` for changed rows                                      |
-| 2️⃣ | Different Schemas      | • Accept tables with differing structures  <br>• Produce **stock‑level** and **NPI‑level** difference summaries plus overall match counts                                                         |
-| 3️⃣ | File‑level Summary     | • If `STOCK_ID` present → summarise **new / dropped / matched stocks**  <br>• If `UUID` present → summarise **new / dropped / matched UUIDs**                                                       |
-| 4️⃣ | Usability & Outputs    | • Flag schema mismatches clearly  <br>• Show analyst‑friendly summaries and optional machine‑readable JSON diff logs  <br>• Format output for downstream validation dashboards / approval workflows |
-| 5️⃣ | Non‑functional (draft) | • Compare up to **X** rows within **X** minutes (TBC)  <br>• Log and surface malformed input or missing‑field errors                                                                                |
+**Cohort building** involves defining the criteria for inclusion in a cohort.
+**Cohort management** includes updating and maintaining cohorts over time.
+**Cohort scheduling** ensures that cohorts are refreshed at specified intervals to include the latest data.
 
----
+## Problem(s) to be Solved
 
-## 🏗️ Architecture
+The Cohort Builder is designed to assist businesses and analysts in creating precise groupings of data subjects based on specific characteristics or behaviors. The application allows for:
 
-* **Streamlit** front‑end (runs inside Snowflake Native Apps *or* locally).
-* **Snowflake** back‑end for data retrieval and compute.
-* **Pandas** for in‑memory diff logic (PoC‑scale).
+- **Defining Cohorts** - Specify criteria for cohort membership using SQL queries.
+- **Managing Cohorts** - Update and maintain existing cohorts to ensure data accuracy.
+- **Scheduling Cohorts** - Automate the refreshing of cohorts at regular intervals using Snowflake dynamic tables, tasks and procedures.
 
-```
-┌─────────┐     SQL    ┌─────────────┐
-│Streamlit│  ───────▶  │ Snowflake   │
-│  UI     │  ◀───────  │ (tables)    │
-└─────────┘  DataFrame └─────────────┘
-```
+## Functionalities
 
-> ⚠️  For large datasets the diff logic should migrate to **Snowpark** or **SQL MERGE** routines; this PoC keeps everything in memory for simplicity.
+The Cohort Builder application offers three primary functionalities:
 
----
+1. **Cohort Building** - Users can define cohort criteria through an intuitive interface that generates the necessary SQL queries.
+2. **Cohort Management** - Provides tools for updating and managing cohorts to keep them current and relevant.
+3. **Cohort Scheduling** - Allows users to set up automated tasks to refresh cohort data at specified cadences (e.g., hourly, daily, weekly, monthly).
 
-## 🚀 Quick Start
+## Takeaways
 
-### 1 ‑ Prerequisites
+The Cohort Builder simplifies the process of cohort creation and management, ensuring that businesses can efficiently group data subjects and maintain up-to-date cohorts. By automating cohort updates, businesses can save time and reduce the risk of using outdated data.
 
-* Python `3.9+`
-* `pip install -r requirements.txt`
-* Snowflake account with a role that can `SELECT` the tables you plan to compare.
+The model assumes that the criteria for cohort inclusion are well-defined and that all necessary data is available in Snowflake. Properly setting up and managing these cohorts can lead to better data-driven decision-making.
 
-### 2 ‑ Configure Secrets
+## Example Use Cases
 
-Create a `.streamlit/secrets.toml` (local) or use Snowflake secret manager (native app):
+1. **Marketing Campaigns** - Create cohorts based on customer purchase behavior to target specific groups for marketing campaigns.
+2. **Product Development** - Group users by usage patterns to identify potential improvements or new features.
+3. **Healthcare** - Segment patients by treatment types or outcomes to study the effectiveness of medical interventions.
 
-```toml
-[snowflake]
-user = "YOUR_USER"
-password = "YOUR_PASSWORD"
-account = "YOUR_ACCOUNT"
-warehouse = "YOUR_WAREHOUSE"
-role = "YOUR_ROLE"
-```
+## Directions
 
-### 3 ‑ Run Locally
+1. Run `sql/app_setup.sql` as `ACCOUNTADMIN` in your Snowflake account.
+2. In Snowsight, set your role to `COHORT_BUILDER_ROLE`, navigate to Databases on the left-hand bar, and select `COHORT_BUILDER_FOR_SNOWFLAKE`.
+3. Select `APP` Schema, Open `Stages` and select the stage `STAGE_COHORT_BUILDER`.
+![select stage](https://github.com/Snowflake-Labs/sfguide-cohort-builder/blob/main/images/select_stage.png)
+4. Select the `cohort_builder_load_wh` warehouse.
+5. Click on `+ Files` and upload the necessary files and folders from the GIT Repo. Your Stage should look like this.
+![alt text](https://github.com/Snowflake-Labs/sfguide-cohort-builder/blob/main/images/stage_files.png)
+4. Navigate to Projects on the left-hand bar, and select Streamlit.
+3. Select `COHORT_BUILDER` in your list of Streamlit Apps.
+4. Follow in-app instructions to build, manage, and schedule your cohorts.
 
-```bash
-streamlit run cohort_diff_app.py
-```
-
-### 4 ‑ Run Inside Snowflake
-
-1. Upload `cohort_diff_app.py` to the Snowflake **/app** directory.
-2. Create a Streamlit app in the Snowflake UI and point it to the script.
-
----
-
-## 🖥️ Usage
-
-1. **Select source & target tables** (can be in different databases/schemas).
-2. Enter the **join key** (e.g. `STOCK_ID`).
-3. Click **🔍 Compare Tables**.
-4. Review the **Summary metrics** and explore **New**, **Dropped**, and **Changed** record tabs.
-5. Copy or download the JSON diff logs for downstream validation.
-
----
-
-## 🧩 Extending This PoC
-
-* **Schema‑variant comparison** – switch to column‑set intersection & union logic.
-* **Large‑scale data** – push diff computation into Snowpark UDFs / JavaScript.
-* **Export options** – write diff outputs back to Snowflake tables or S3 as Parquet.
-
----
-
-## 📄 License
-
-Apache 2.0 (see `LICENSE` file).
-
----
-
-## 🙏 Acknowledgements
-
-* Snowflake Labs Streamlit examples & Udemy courses for initial concept & implementation.
-
----
-
-Happy comparing! 🎉
+By following these steps, users can leverage the power of Snowflake and Snowpark to create and maintain effective cohorts tailored to their specific needs.

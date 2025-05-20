@@ -11,7 +11,7 @@ Last updated: 2025‑05‑15
 ───────────────────────────────────────────────────────────────────────────────
 • *Goal*: Replace the manual mapping between
   `NHS_DATA_DEV.MEDICAL_LABS_LABELLED.PATIENT_PROCEDURES` and
-  `NHS_DATA_DEV.DDP. MEDICAL_GPS_DISEASES` with a Streamlit interface.
+  `NHS_DATA_DEV.DDP.MEDICAL_GPS_DISEASES` with a Streamlit interface.
 • *Acceptance criteria*:
   1. Work in **KJB88781** using each developer’s personal schema.
   2. One Streamlit per person (learning exercise).

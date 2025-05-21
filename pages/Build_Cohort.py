@@ -1966,7 +1966,7 @@ class CreateDynamicTable:
             COMMENT = '{{"origin":"sf_sit","name":"cohort-builder","version":{{"major":1, "minor":1}},"attributes":{{"cohort":"{cohort_name}", "type":"dynamictable"}}}}'
             REFRESH_MODE = {refresh_mode}
             TARGET_LAG = '{target_lag}'
-            WAREHOUSE = 'DXRX_DEVELOPER'
+            WAREHOUSE = 'NHS_DEVELOPER'
             AS
             {st.session_state.cohort_query};
             """
@@ -2042,7 +2042,7 @@ class CreateSnapshotTable:
             create_task_sql = f"""
             CREATE OR REPLACE TASK snapshot_task_{table_name}
                 COMMENT = '{{"origin":"sf_sit","name":"cohort-builder","version":{{"major":1, "minor":1}},"attributes":{{"cohort":"{cohort_name}", "type":"snapshot", "cadence":"{cadence}"}}}}'
-                WAREHOUSE = 'DXRX_DEVELOPER'
+                WAREHOUSE = 'NHS_DEVELOPER'
                 SCHEDULE = '{cron_schedule}'
             AS
                 CALL {table_name}_snapshot_proc();
@@ -2083,7 +2083,7 @@ class CreateOneTimeTable:
         create_table_sql = f"""
         CREATE OR REPLACE DYNAMIC TABLE {table_name}
         TARGET_LAG = 'downstream'
-        WAREHOUSE = 'DXRX_DEVELOPER'
+        WAREHOUSE = 'NHS_DEVELOPER'
         COMMENT = '{{"origin":"sf_sit","name":"cohort-builder","version":{{"major":1, "minor":1}},"attributes":{{"cohort":"{cohort_name}", "type":"onetime"}}}}'
         AS
         {st.session_state.cohort_query};

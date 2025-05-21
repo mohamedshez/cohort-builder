@@ -1,5 +1,5 @@
 """
-DXRX Cohort Builder – Existing Cohort page
+NHS Cohort Builder – Existing Cohort page
 Create by Mohamed Shez (14‑May‑2025).
 
 """
